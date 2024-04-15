@@ -21,10 +21,11 @@ body {
   color: white;
 }
 
-.App-logo {
+.eth_logo {
+  transition: filter 0.5s ease-in-out, transform 0.5s ease-in-out;
   height: 40vmin;
   pointer-events: none;
-  animation: App-logo-spin infinite 5s ease;
+  animation: App-logo-spin  5s ease;
 }
 
 @keyframes App-logo-spin {
@@ -35,6 +36,25 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.eth_logo_gold {
+  transition: filter 0.5s ease-in-out, transform 0.5s ease-in-out;
+  height: 40vmin;
+  pointer-events: none;
+  animation: App-logo-glow infinite 5s ease-in-out;
+}
+
+@keyframes App-logo-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 0, 0)); /* Adjust color and opacity */
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 0, 0.8)); /* Brighter and more prominent */
+    transform: scale(1.1);
+  }
+}
+
 
 /* Main page content */
 main {

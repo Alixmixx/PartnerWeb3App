@@ -9,7 +9,7 @@ import MainButton from './MainButton';
 import PartnerInput from './PartnerInput';
 import ContractStarter from './ContractStarter';
 
-export default function Home() {
+export default function Home({ setIsValid }) {
   const [hasWalletWarning, setHasWalletWarning] =
     useState(false);
   const web3 = useRef(null);
@@ -117,6 +117,10 @@ export default function Home() {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    setIsValid(allValid);
+  }, [allValid, setIsValid]);
 
   useEffect(() => {
     setHasWalletWarning(
