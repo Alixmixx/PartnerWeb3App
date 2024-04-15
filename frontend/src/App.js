@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import logo from './ethereum-1.svg';
 import './App.css';
 import Home from './components/Home';
 

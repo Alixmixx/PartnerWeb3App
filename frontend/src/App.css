@@ -11,7 +11,7 @@ body {
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #3d2a5c;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,14 +24,14 @@ body {
 .App-logo {
   height: 40vmin;
   pointer-events: none;
-  animation: App-logo-spin infinite 20s linear;
+  animation: App-logo-spin infinite 5s ease;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  0%, 100% {
+    transform:  rotate(0deg);
   }
-  to {
+  50% {
     transform: rotate(360deg);
   }
 }
@@ -73,6 +73,34 @@ button:disabled {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+.Input-address {
+  width: 44ch;
+  padding: 8px 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-family: monospace;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.Input-address.error {
+  border: 2px solid red; /* Highlight the border */
+}
+
+.Error-message {
+  color: red;
+  font-size: 0.9em;
+  visibility: visible; /* No need for :not(:empty) anymore */
+  animation: fadeInError 0.3s ease-out;
+}
+
+@keyframes fadeInError {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
 .input {
   padding: 8px;
   margin: 0 10px;
@@ -95,7 +123,14 @@ input[type="number"] {
 
 /* Adjustments to handle errors */
 p {
+  min-height: 22px;  /* Ensures that space is reserved even if there's no visible text */
   color: red;
   margin-top: 4px;
+  visibility: hidden;  /* Initially hidden */
   font-size: 0.8em;
+}
+
+/* Show error message when there is content */
+p:not(:empty) {
+  visibility: visible;
 }

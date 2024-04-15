@@ -7,6 +7,7 @@ import Title from './Title';
 import Web3 from 'web3';
 import MainButton from './MainButton';
 import PartnerInput from './PartnerInput';
+import ContractStarter from './ContractStarter';
 
 export default function Home() {
   const [hasWalletWarning, setHasWalletWarning] =
@@ -30,6 +31,14 @@ export default function Home() {
       split: 1,
     },
   ]);
+
+  const allValid =
+    partners.every(
+      partner => partner.error === ''
+    ) &&
+    partners.every(
+      partner => partner.address !== ''
+    );
 
   const AddressInputs = partners.map(
     (partner, index) => {
@@ -60,7 +69,7 @@ export default function Home() {
                 newPartnersState[index].error =
                   isValueAddress
                     ? ''
-                    : 'Enter a valid wallet address';
+                    : 'Invalid address';
                 return newPartnersState;
               });
             },
@@ -148,10 +157,9 @@ export default function Home() {
           </div>
         )}
         {currentAccount && (
-            <div>
-                {AddressInputs}
-            </div>
+          <div>{AddressInputs}</div>
         )}
+        {allValid && <ContractStarter />}
       </main>
     </div>
   );

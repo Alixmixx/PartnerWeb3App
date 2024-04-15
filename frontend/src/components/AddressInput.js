@@ -9,7 +9,7 @@ export default function AddressInput({
     <>
       <label htmlFor={label}>{label}</label>
       <input
-        className="input"
+        className={`Input-address ${error ? 'error' : ''}`}
         name={label}
         value={value}
         type="text"
@@ -21,7 +21,6 @@ export default function AddressInput({
         }
         placeholder="Wallet Address"
       />
-      {error ? <p>{error}</p> : <p>&nbsp;</p>}
     </>
   );
 }
