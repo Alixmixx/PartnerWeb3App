@@ -9,7 +9,10 @@ contract Partnership {
     uint256[] public splitRatio;
     uint256 private splitRatioTotal;
 
-    constructor(address payable[] memory _addresses, uint256[] memory _splitRatio) {
+    constructor(
+        address payable[] memory _addresses,
+        uint256[] memory _splitRatio
+    ) {
         require(
             _addresses.length > 1,
             "More than one address should be provided to establish a partnership"
@@ -29,12 +32,13 @@ contract Partnership {
         uint256 balance = getBalance();
 
         require(balance > 0, "Insufficient balance");
-        require(balance > splitRatioTotal, "Balance should be greater than total split ratio");
+        require(
+            balance > splitRatioTotal,
+            "Balance should be greater than total split ratio"
+        );
 
         for (uint256 i = 0; i < addressesLength; i++) {
-            addresses[i].transfer(
-                (balance / splitRatioTotal) * splitRatio[i]
-            );
+            addresses[i].transfer((balance / splitRatioTotal) * splitRatio[i]);
         }
     }
 
@@ -54,5 +58,13 @@ contract Partnership {
             total += _splitRatio[i];
         }
         return total;
+    }
+
+    function getAddressesLength() public view returns (uint) {
+        return addresses.length;
+    }
+
+    function getSplitRatiosLength() public view returns (uint) {
+        return splitRatio.length;
     }
 }

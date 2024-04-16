@@ -1,12 +1,20 @@
 import eth_logo from './ethereum-1.svg';
 import eth_logo_gold from './ethereum-gold.svg';
 import './App.css';
-import Home from './components/Home';
+import Home from './pages/Home';
+import NotFoundPage from './pages/NotFoundPage';
 import React, {
   useState,
   useEffect,
   useRef,
 } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from 'react-router-dom';
+import ContractPage from './pages/ContractPage';
+
 function App() {
   const [isValid, setIsValid] = useState(false);
   const [currentLogo, setCurrentLogo] =
@@ -21,6 +29,10 @@ function App() {
         console.log(
           'Animation ended, updating logo and class'
         );
+        logoElement.style.animation = 'none';
+        setTimeout(() => {
+          logoElement.style.animation = ''; // Reapply the same animation
+        }, 10);
         setCurrentLogo(
           isValid ? eth_logo_gold : eth_logo
         );
@@ -53,7 +65,24 @@ function App() {
           className={currentCss}
           alt="eth_logo"
         />
-        <Home setIsValid={setIsValid} />
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home setIsValid={setIsValid} />
+              }
+            />
+            <Route
+              path="/contract/:id"
+              element={<ContractPage />}
+            />
+            <Route
+              path="*"
+              element={<NotFoundPage />}
+            />
+          </Routes>
+        </Router>
       </header>
     </div>
   );

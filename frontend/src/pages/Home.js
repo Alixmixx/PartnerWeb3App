@@ -3,11 +3,11 @@ import {
   useEffect,
   useRef,
 } from 'react';
-import Title from './Title';
+import Title from '../components/Title';
 import Web3 from 'web3';
-import MainButton from './MainButton';
-import PartnerInput from './PartnerInput';
-import ContractStarter from './ContractStarter';
+import MainButton from '../components/MainButton';
+import PartnerInput from '../components/PartnerInput';
+import ContractStarter from '../components/ContractStarter';
 
 export default function Home({ setIsValid }) {
   const [hasWalletWarning, setHasWalletWarning] =
@@ -163,7 +163,14 @@ export default function Home({ setIsValid }) {
         {currentAccount && (
           <div>{AddressInputs}</div>
         )}
-        {allValid && <ContractStarter />}
+        {allValid && (
+          <ContractStarter
+            currentAccount={currentAccount}
+            partners={partners}
+            allValid={allValid}
+            web3={web3}
+          />
+        )}
       </main>
     </div>
   );

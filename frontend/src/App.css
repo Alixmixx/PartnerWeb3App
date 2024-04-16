@@ -129,6 +129,34 @@ button:disabled {
   flex-grow: 1;
 }
 
+.list_box {
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 5px;
+  margin: 20px;
+}
+
+.list_element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  background-color: white;
+  color: #333;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  min-width: 100px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.list_element:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+
 label {
   display: block;
   margin-bottom: 5px;
