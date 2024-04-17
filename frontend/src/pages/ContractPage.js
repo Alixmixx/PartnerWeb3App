@@ -11,13 +11,12 @@ export default function ContractPage({}) {
   const currentAccount = location.state.currentAccount;
   const [contractAddress, setcontractAddress] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [amount, setAmount] = useState(0);
 
   const [addresses, setAddresses] = useState([]);
   const [splitRatios, setSplitRatios] = useState([]);
   const [contractBalance, setContractBalance] = useState('0');
   const web3 = useRef(null);
-  let contract = null;
+  const contract = useRef(null);
 
   useEffect(() => {
     const initWeb3 = async () => {
@@ -32,16 +31,16 @@ export default function ContractPage({}) {
   // Get contract infos
   useEffect(() => {
     const { abi } = Partnership;
-    contract = new web3.current.eth.Contract(abi, contractAddress);
+    contract.current = new web3.current.eth.Contract(abi, contractAddress);
 
     console.log('Contract', contract);
     console.log('address', contractAddress);
     const loadContractData = async () => {
       try {
-        const addressesLength = await contract.methods
+        const addressesLength = await contract.current.methods
           .getAddressesLength()
           .call();
-        const splitRatiosLength = await contract.methods
+        const splitRatiosLength = await contract.current.methods
           .getSplitRatiosLength()
           .call();
 
@@ -49,15 +48,20 @@ export default function ContractPage({}) {
         const splitRatiosPromises = [];
 
         for (let i = 0; i < addressesLength; i++) {
-          addressesPromises.push(contract.methods.addresses(i).call());
+          addressesPromises.push(contract.current.methods.addresses(i).call());
         }
         for (let i = 0; i < splitRatiosLength; i++) {
-          splitRatiosPromises.push(contract.methods.splitRatio(i).call());
+          splitRatiosPromises.push(
+            contract.current.methods.splitRatio(i).call()
+          );
         }
 
         const addresses = await Promise.all(addressesPromises);
         const splitRatios = await Promise.all(splitRatiosPromises);
-
+        const balanceInWei = await contract.current.methods.getBalance().call();
+        const balanceInEther = web3.current.utils.fromWei(balanceInWei, 'ether');
+        
+        setContractBalance(parseFloat(balanceInEther));
         setAddresses(addresses);
         setSplitRatios(splitRatios);
       } catch (error) {
@@ -66,36 +70,45 @@ export default function ContractPage({}) {
     };
 
     loadContractData();
-  }, [contractAddress]);
+  }, [contractAddress, isProcessing]);
 
   // Withdraw
   const handleWithdraw = async () => {
-    const { abi } = Partnership;
-    const contract = new web3.current.eth.Contract(abi, contractAddress);
+    if (!contract.current) {
+      console.error('Contract is not initialized.');
+      return;
+    }
 
-    const gas = await contract.methods.withdraw().estimateGas();
-    setIsProcessing(true);
+    try {
+      const gas = await contract.current.methods
+        .withdraw()
+        .estimateGas({ from: currentAccount });
+      setIsProcessing(true);
 
-    contract.methods
-      .withdraw()
-      .send({ from: currentAccount, gas })
-      .on('error', error => {
-        console.log('error', error);
-        setIsProcessing(false);
-      })
-      .on('receipt', receipt => {
-        console.log('Receipt', receipt);
-        setIsProcessing(false);
-      })
-      .on('confirmation', (_confirmationNumber, receipt) => {
-        console.log('Confirmed', receipt);
-      });
+      contract.current.methods
+        .withdraw()
+        .send({ from: currentAccount, gas })
+        .on('error', error => {
+          console.error('Error on withdraw:', error);
+          setIsProcessing(false);
+        })
+        .on('receipt', receipt => {
+          console.log('Receipt:', receipt);
+          setIsProcessing(false);
+        })
+        .on('confirmation', (_confirmationNumber, receipt) => {
+          console.log('Confirmed:', receipt);
+        });
+    } catch (error) {
+      console.error('Withdraw failed:', error);
+      setIsProcessing(false);
+    }
   };
 
   return (
     <>
       <h2>Current Contract {contractAddress}</h2>
-      <h2>Contract Balance {contractBalance}</h2>
+      <h2>Contract Balance {contractBalance} ETH</h2>
       <ul className="list_box">
         <li className="flex">
           <div className="list_element">Partners address</div>
@@ -112,6 +125,7 @@ export default function ContractPage({}) {
         <SendTransactionInput
           currentAccount={currentAccount}
           contract={contract}
+          web3={web3}
         />
       </div>
       <div>

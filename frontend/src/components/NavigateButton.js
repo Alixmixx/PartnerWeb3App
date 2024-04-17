@@ -21,7 +21,6 @@ export default function NavigateButton({
       disabled={disabled}
     >
       <span>{label}</span>
-      <span>{currentAccount}</span>
     </button>
   );
 }
